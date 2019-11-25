@@ -241,60 +241,73 @@ public class LocalPhase implements PlugInFilter,DialogListener, ActionListener {
 	
 	/** Calculate phase image
 	 * 
-	 * @param inputImage
-	 * @param ref_x
-	 * @param ref_y
-	 * @param theMask
-	 * @param showOutput
-	 * @return
+	 * @param inputImage The image indicating peak locations (pixel value larger than 0) in the z-profiles. 
+	 * @param ref_x X-coordinate of the reference section
+	 * @param ref_y Y-coordinate of the reference section
+	 * @param theMask Mask image to limit analysis, provide null to not use this option
+	 * @param showOutput Be verbose about output (ImageJ message boxes)
+	 * @return New ImageStack, with a single slice, shows the local phase (or NaN if none could be evaluated)
 	 */
 	
 	public static ImageStack getPhaseImage(ImagePlus inputImage, int ref_x, 
 			int ref_y, ImagePlus theMask, boolean showOutput)
 	{
-		
+		// Get the non-zero indices at the reference section
 		int [] idx_ref = non_zero_indices(inputImage, ref_x, ref_y);
 
 		if(showOutput)
 		{
 			IJ.showMessage("Reference section : "+idx_ref.length+" peaks detected");
 		}
-
+		// Intialize the output stack, single slice
 		ImageStack theStack = new ImageStack(inputImage.getWidth(), 
 				inputImage.getHeight(), 1);
-
+		// Processor to put the values
 		FloatProcessor fp=new FloatProcessor(theStack.getWidth(), 
 				theStack.getHeight());
-		
+		// Assign the processor to the one slice in the output stack
 		theStack.setProcessor(fp, 1);
 
 		
-		
+		// Run through all the pixels
 		for(int x=0; x<inputImage.getWidth(); x++)
 		{
 			for(int y=0; y<inputImage.getHeight(); y++)
 			{
-					
+					// Calculate and put the local phase value
 					fp.putPixelValue(x, y, doEvaluationAtxy(inputImage, x, y, idx_ref, theMask));
 					
 					
 					
 				
 			}
-			
+			// This can take a while, so show the progress bar
+			if(showOutput)
+			{
 			IJ.showProgress(((double) x)/((double) inputImage.getWidth()));
+			}
 		}
 		
 		
-		
+		// Return the single-slice stack containing the phase image
 		return theStack;
 		
 	}
 	
+	/**
+	 * Calculate the phase at a fixed xy position by comparing the local z-profile to the reference z-profile
+	 * @param inputImage The temporal peak image to be analyzed (the z-profile will be taken from this)
+	 * @param x The x value where the phase should be determined
+	 * @param y The y value where the phase should be determined
+	 * @param idx_ref The indices (z-positions) where the peaks are in the reference section
+	 * @param theMask Mask to only evaluate pixels positive in the mask (provide null if not needed)
+	 * @return Local phase, in degrees.
+	 */
 	public static double doEvaluationAtxy(ImagePlus inputImage, int x, int y, 
 			int[] idx_ref, ImagePlus theMask)
 	{
-		
+		// If we fall outside the mask or if the pixel value at xy in the mask is zero, do not do
+		// any analysis but return NaN
 		if(theMask != null)
 		{
 			if(x>=theMask.getWidth() || y>=theMask.getHeight())
@@ -307,17 +320,36 @@ public class LocalPhase implements PlugInFilter,DialogListener, ActionListener {
 			}
 		}
 		
+		// Otherwise, or if no mask is provided, calculate the local phase, convert to degreees, and return
 		return getPhaseAtxy(inputImage,x, y, idx_ref)/Math.PI*180.0;
 		
 		
 		
 	}
 	
+	/**
+	 * Calculate the phase at a fixed xy position by comparing the local z-profile to the reference z-profile
+	 * @param inputImage The temporal peak image to be analyzed (the z-profile will be taken from this)
+	 * @param x The x value where the phase should be determined
+	 * @param y The y value where the phase should be determined
+	 * @param idx_ref The indices (z-positions) where the peaks are in the reference section
+	 * @return Local phase, in degrees.
+	 */
+	
 	public static double doEvaluationAtxy(ImagePlus inputImage, int x, int y, int[] idx_ref)
 	{
 		return doEvaluationAtxy( inputImage,  x,  y, 
 				 idx_ref, null);
 	}
+	
+	/**
+	 * Calculate the phase at a fixed xy position by comparing the local z-profile to the reference z-profile
+	 * non-static method, uses image passed to plugin
+	 * @param x The x value where the phase should be determined
+	 * @param y The y value where the phase should be determined
+	 * @param idx_ref The indices (z-positions) where the peaks are in the reference section
+	 * @return Local phase, in degrees.
+	 */
 	
 	public double doEvaluationAtxy(int x, int y, int[] idx_ref)
 	{
