@@ -96,7 +96,7 @@ public class FindPeaksTools {
 
 	/** 
 	 * This function identifies peaks above a threshold, and with a minimal distance between 
-	 * them. The function is a bit rought and therefore needs some cleanup afterwards, but it 
+	 * them. The function is a bit rough and therefore needs some cleanup afterwards, but it 
 	 * gives suitable primary candidates. This is the first part of the findPeak implementation
 	 * in Octave (https://searchcode.com/codesearch/view/64213481/)
 	 * @param vals Values of the function for which peaks should be found. Unit spacing between sequential values is assumed

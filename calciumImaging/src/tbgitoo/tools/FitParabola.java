@@ -1,3 +1,27 @@
+/* Copyright (c) 2019 Thomas Braschler <thomas.braschler@unige.ch>
+##
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 3 of the License, or
+## (at your option) any later version.
+##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+## GNU General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with this program; if not, see <http://www.gnu.org/licenses/>. 
+
+## This code is in part a Java re-implementation (sometimes physically, sometimes in spirit)
+## of the Octave findPeaks method, by Juan Pablo Carbajal, 
+## available at https://bitbucket.org/mtmiller/octave-signal
+## (direct link: https://searchcode.com/codesearch/view/64213481/)
+## The Octave source code is under a General Public License
+## 
+
+*/
+
 package tbgitoo.tools;
 
 public class FitParabola {
@@ -9,23 +33,25 @@ public class FitParabola {
 
 		public static double[] fitParabola(double [] vals)
 		{
-			// The constants a,b,c
+			// The constants a,b,c for cx^2 + bx + a
 			double [] params = new double[3];
 			// No values provided, return a=b=c=0
 			if(vals.length==0)
 			{
-				params[0]=0;
-				params[1]=0;
-				params[2]=0;
+				// no values provided, return all coefficients 0
+				params[0]=0; // a as offset
+				params[1]=0; // b in of x terms
+				params[2]=0; // c in front of x^2 terms
 				return params;
 			}
 			// only 1 value provided, store this in constant
 			// also, negative value in the quadratic term to make peak at x=0
 			if(vals.length==1)
 			{
-				params[0]=vals[0];
-				params[1]=0;
-				params[2]=-1;
+				
+				params[0]=vals[0]; // a as offset, this is the actual value
+				params[1]=0; // b: no linear contribution
+				params[2]=-1; // c negative to have a maximum, about 1 unit wide
 				return params;
 			}
 			// two values provided, place apex of parabola on 1
