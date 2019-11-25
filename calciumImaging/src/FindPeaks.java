@@ -38,7 +38,11 @@ import ij.process.ImageProcessor;
 // The basic idea of this plugin is that it identifies the peak location in the z-axis of the stack
 // it is inspired by Octave findpeaks code.
 
-/** ImageJ plugin to find peaks (maxima) in vertical sections of a z-stack*/
+/**
+ * ImageJ plugin to find peaks (maxima) in vertical sections of a z-stack
+ * @author thomasbraschler
+ *
+ */
 public class FindPeaks implements PlugInFilter,DialogListener {
 
 	/** Holds a reference to the primary ImagePlus object associated with this plugin */
