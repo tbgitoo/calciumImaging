@@ -228,7 +228,7 @@ public class FindPeaksTools {
 				if(ind != current_node && Math.abs(idx_s[ind]-idx_s[current_node])<minD)
 				{
 
-					if(!FindPeaksTools.findInVector(ind, visited)) // Not visited yet, add to the neighbors
+					if(!VectorTools.findInVector(ind, visited)) // Not visited yet, add to the neighbors
 					{
 						neighs.add(ind);
 					}
@@ -245,8 +245,8 @@ public class FindPeaksTools {
 					visited.add(neighs.get(ind).intValue());
 				}
 
-				idx_pruned=FindPeaksTools.setDiff(idx_pruned,idx_neighs);
-				node2visit=FindPeaksTools.setDiff(node2visit, visited);
+				idx_pruned=VectorTools.setDiff(idx_pruned,idx_neighs);
+				node2visit=VectorTools.setDiff(node2visit, visited);
 			}
 
 
@@ -500,13 +500,13 @@ public class FindPeaksTools {
 
 
 		// Normalize to length 1
-		double n_x_regression = vector_norm(x_regression);
+		double n_x_regression = VectorTools.vector_norm(x_regression);
 		for(int ind=0; ind<x_regression.length; ind++)
 		{
 			x_regression[ind]=x_regression[ind]/n_x_regression;
 		}
 
-		double b=scalar_product(vals,x_regression)/n_x_regression;
+		double b=VectorTools.scalar_product(vals,x_regression)/n_x_regression;
 
 		double x2_regression[] = new double[vals.length]; // Regressor for the linear regression
 
@@ -517,14 +517,14 @@ public class FindPeaksTools {
 
 		// Subtract the average value
 
-		double x2_regression_mean = mean(x2_regression);
+		double x2_regression_mean = VectorTools.mean(x2_regression);
 		for(int ind=0; ind<x_regression.length; ind++)
 		{
 			x2_regression[ind]=x2_regression[ind]-x2_regression_mean;
 		}
 
 		// Normalize to length 1
-		double n_x2_regression = vector_norm(x2_regression);
+		double n_x2_regression = VectorTools.vector_norm(x2_regression);
 		for(int ind=0; ind<x_regression.length; ind++)
 		{
 			x2_regression[ind]=x2_regression[ind]/n_x2_regression;
@@ -533,7 +533,7 @@ public class FindPeaksTools {
 
 
 
-		double c=scalar_product(vals,x2_regression)/n_x2_regression;
+		double c=VectorTools.scalar_product(vals,x2_regression)/n_x2_regression;
 
 
 		// Since we have b and c now, we can calculate the offset from the mean values
@@ -545,7 +545,7 @@ public class FindPeaksTools {
 			vals_reduced[ind] = vals[ind]-b*((double)ind-xbar)-c*((double)ind-xbar)*((double)ind-xbar);
 		}
 
-		double a = mean(vals_reduced);
+		double a = VectorTools.mean(vals_reduced);
 
 
 
@@ -690,15 +690,15 @@ public class FindPeaksTools {
 		// A-b*B-c*C =>
 		// b=(c*C-A)/B
 
-		double [] x_rel2 = element_wise_multiplication(x_rel,x_rel);
-		double [] x_rel3 = element_wise_multiplication(x_rel2,x_rel);
-		double [] x_rel4 = element_wise_multiplication(x_rel3,x_rel);
+		double [] x_rel2 = VectorTools.element_wise_multiplication(x_rel,x_rel);
+		double [] x_rel3 = VectorTools.element_wise_multiplication(x_rel2,x_rel);
+		double [] x_rel4 = VectorTools.element_wise_multiplication(x_rel3,x_rel);
 
-		double A = scalar_product(relative_height,x_rel);
-		double B = sum(x_rel2);
-		double C = sum(x_rel3);
-		double D = scalar_product(relative_height,x_rel2);
-		double E = sum(x_rel4);
+		double A = VectorTools.scalar_product(relative_height,x_rel);
+		double B = VectorTools.sum(x_rel2);
+		double C = VectorTools.sum(x_rel3);
+		double D = VectorTools.scalar_product(relative_height,x_rel2);
+		double E = VectorTools.sum(x_rel4);
 
 		double c=(D*B-A*C)/(E*B-C*C);
 		double b=(A-c*C)/B;
@@ -724,93 +724,12 @@ public class FindPeaksTools {
 
 
 
-	// Scalar product of two vectors. If not of the same length, the shorter is length is considered only
+	
 
-	public static double scalar_product(double [] x, double [] y)
-	{
-		int l = Math.min(x.length, y.length);
-		double sum=0;
-		for(int ind=0; ind<l; ind++)
-		{
-			sum=sum+x[ind]*y[ind];
-		}
-		return sum;
-	}
+	
 
-	public static double[] element_wise_multiplication(double [] x, double [] y)
-	{
-		int l = Math.min(x.length, y.length);
-		double[] res=new double[l];
-		for(int ind=0; ind<l; ind++)
-		{
-			res[ind]=x[ind]*y[ind];
-		}
-		return res;
-	}
-
-	// Pythagorean length of the vector: sqrt(x1^2+x2^2+..)
-	public static double vector_norm(double [] x)
-	{
-
-		return Math.sqrt(scalar_product(x,x));
-	}
-
-	public static double  mean(double [] x)
-	{
-		double s = 0;
-		for(int ind=0; ind<x.length; ind++)
-		{
-			s = s + x[ind];
-		}
-		if(x.length>0)
-		{
-			return (s/(double)x.length);
-		}
-		return 0;
-
-	}
-
-	public static double [] getHistogram(int [] vals)
-	{
-
-
-		// Initialize
-		long[] hist = new long[256];
-		double[] Dhist = new double[256];
-
-		for(int ind=0; ind<hist.length; ind++)
-		{
-			hist[ind]=0;
-			Dhist[ind]=0;
-		}
-
-		double total=0;
-
-
-
-
-		for(int ind=0; ind<vals.length; ind++)
-		{
-			hist[vals[ind]]++;
-			total++;
-
-		}
-
-		// Normalize
-
-
-		for(int ind=0; ind<hist.length; ind++)
-		{
-			Dhist[ind]=((double)hist[ind])/total;
-		}
-
-
-		return Dhist;
-
-
-
-
-	}
+	
+	
 	
 	public static double getQuantileFromValues(double [] val, double p)
 	{
@@ -983,65 +902,13 @@ public class FindPeaksTools {
 
 	}
 
-	public static boolean findInVector(int needle, Vector <Integer> haystack)
-	{
-		boolean found=false;
-		for(int ind=0; ind<haystack.size(); ind++)
-		{
-			if(haystack.get(ind).intValue()==needle)
-			{
-				found=true;
-			}
-		}
-		return found;
-	}
+	
 
-	// Returns all the elements that are in a but could not be found in b
-	public static Vector <Integer> setDiff(Vector <Integer> a, Vector <Integer> b)
-	{
-		Vector <Integer> ret = new Vector <Integer>(a.size());
+	
 
-		for(int ind=0; ind<a.size(); ind++)
-		{
-			if(!findInVector(a.get(ind).intValue(),b))
-			{
-				ret.add(a.get(ind).intValue());
-			}
-		}
+	
 
-		return(ret);
-
-	}
-
-	public static double  sum(double [] x)
-	{
-		double s = 0;
-		for(int ind=0; ind<x.length; ind++)
-		{
-			s = s + x[ind];
-		}
-		if(x.length>0)
-		{
-			return (s);
-		}
-		return 0;
-
-	}
-
-	public static int  sum(int [] x)
-	{
-		int s = 0;
-		for(int ind=0; ind<x.length; ind++)
-		{
-			s = s + x[ind];
-		}
-		if(x.length>0)
-		{
-			return (s);
-		}
-		return 0;
-
-	}
+	
 
 
 
