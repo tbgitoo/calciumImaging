@@ -48,22 +48,29 @@ import ij.process.ByteProcessor;
 
 
 /**
- * Collection of static methods to enable peak identification in a one-dimensional array of values
+ * Collection of static methods supporting the peak analysis of image stacks
+ * A first group of functions enables peak detection in a one-dimensional array of values
+ * There are also some very basic implementation of vecotr functions (mean, scalar product, sum and so on) used
+ * repeatedly in the context of the peak analysis, and finally also image handling functions
  * @author thomasbraschler
  *
  */
 public class FindPeaksTools {
 	
 	/** 
-	 * 
-	 * @param vals
-	 * @param threshold
-	 * @param minD
-	 * @param doFiltering
-	 * @param minW
-	 * @param maxW
-	 * @param minH
-	 * @return
+	 * Main function to identify peaks an array of double values. Parameters as defined for the
+	 * corresponding findPeaks function in Octave (https://searchcode.com/codesearch/view/64213481/)
+	 * However, currently, double-sided peak evaluation is not implemented, if you wish to so, follow
+	 * the instructions for the Octave function (i.e. subtract the mean and take the absolute value before
+	 * passing the array to this function, https://searchcode.com/codesearch/view/64213481/)
+	 * @param vals Array of values in which we search for peaks
+	 * @param threshold Threshold above which the values need to lie to be considered peak candidates
+	 * @param minD Minimal distance between peaks (unit spacing between individual values is assumed) 
+	 * @param doFiltering Should we do filtering for width and height or just accept the peaks found in the primary search?
+	 * @param minW Minimal width (if filtering)
+	 * @param maxW Maximal width (if filtering)
+	 * @param minH Minimal height (above threshold for fitted parabola, effective only when filtering)
+	 * @return Ordered array of indices of the peaks
 	 */
 	public static int[] findPeaks(double[] vals, double threshold, double minD, boolean doFiltering, 
 			double minW, double maxW, double minH)
@@ -84,7 +91,14 @@ public class FindPeaksTools {
 	}
 
 
-	// This function returns indexes such that they point to increasing elements
+	/**
+	 *  This function returns indexes such that they point to increasing elements
+	 *  This function is based on the stackoverflow question 
+	 *  https://stackoverflow.com/questions/4859261/get-the-indices-of-an-array-after-sorting
+	 *  see license section at the beginning of the file
+	 * @param vals Values for which the ordering indices should be obtained
+	 * @return array of indices pointing to progressively increasing array elements
+	 */
 	public static int[] getIndexesOfSortedArray(double[] vals)
 	{
 		

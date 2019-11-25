@@ -22,6 +22,22 @@
 ## (direct link: https://searchcode.com/codesearch/view/64213481/)
 ## The Octave source code is under a General Public License
 
+## There were array-ordering questions involved when recoding the
+## findPeaks method in Java (see particularly the helper class ArrayIndexComparator. 
+## For this, I used a code snippet from a stackoverflow question
+## https://stackoverflow.com/questions/4859261/get-the-indices-of-an-array-after-sorting
+## The question was asked about string ordering by 
+## Eng. Fouad, https://stackoverflow.com/users/597657/eng-fouad and the reply was given
+## The answer used here was given by Jon Skeet, https://stackoverflow.com/users/22656/jon-skeet
+## Here, I adapted the code a bit to the case of double numbers in an array.
+## Feel free your-self to use and modify this code, but please beware that the stackoverflow terms of service
+## require you to: 1) Mention the question and especially its link 2) both the user having asked the 
+## question and the one having answered, by referring to their profile page (as above)
+## and share any derived work under a Creative Commons ShareAlike license or compatible such as 
+## GPL v3 as done here (i.e. see:
+## https://creativecommons.org/share-your-work/licensing-considerations/compatible-licenses) 
+## 
+
 */
 
 
