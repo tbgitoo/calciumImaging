@@ -45,6 +45,7 @@ import java.awt.AWTEvent;
 
 import FindPeaks.accessory.classes.FindPeaksTools;
 import FindPeaks.accessory.classes.ImageTools;
+import FindPeaks.accessory.classes.StatisticsTools;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
@@ -315,8 +316,8 @@ public class FindPeaks implements PlugInFilter,DialogListener {
 			theSection[ind]=(double)intSection[ind];
 		}
 
-		double threshold = FindPeaksTools.getQuantile(
-				FindPeaksTools.getHistogram(intSection)
+		double threshold = StatisticsTools.getQuantile(
+				StatisticsTools.getHistogram(intSection)
 				, 1-peak_fraction);
 		
 		
