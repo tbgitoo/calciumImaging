@@ -24,7 +24,11 @@ public class LocalFrequency implements PlugInFilter,DialogListener  {
 	
 	public static double frame_rate=24;
 
-	
+	/**
+	 * @inheritDoc
+	 *
+	 * For this class, read frame rate
+	 */
 	public boolean dialogItemChanged(GenericDialog gd, AWTEvent e) {
 		// Intermediate variable to accept numbers before filtering
 		
