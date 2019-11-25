@@ -3,9 +3,7 @@ import java.awt.Button;
 import java.awt.TextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Vector;
 
-import FindPeaks.accessory.classes.FindPeaksTools;
 import FindPeaks.accessory.classes.LocalPhaseTools;
 import ij.IJ;
 import ij.ImagePlus;
@@ -14,33 +12,67 @@ import ij.WindowManager;
 import ij.gui.DialogListener;
 import ij.gui.GenericDialog;
 import ij.plugin.filter.PlugInFilter;
-import ij.process.ByteProcessor;
 import ij.process.FloatProcessor;
 import ij.process.ImageProcessor;
 
+/** 
+ * ImageJ plugin to calculate the local phase from a temporal peak image 
+ * */
 public class LocalPhase implements PlugInFilter,DialogListener, ActionListener {
 
-		
+	/** 
+	 * Mask for enhancing calculation speed or defining region of interest	
+	 */
 	public ImagePlus mask=null;
 	
+	/**
+	 * The title of the mask used in the last run (to remember the user choice)
+	 */
 	public static String lastMaskTitle=null;
 	
+	/**
+	 * Should we use a mask to speed up calculation by analyzing only the non-zero points in the mask?
+	 */
 	protected static boolean do_masking=false;
 	
+	/**
+	 * Internal lock, to avoid infinite loops when programmatically updating dialog fields
+	 */
 	protected boolean locked = false;
 	
+	/**
+	 * The imageJ dialog
+	 */
 	protected static GenericDialog gd;
 	
+	/** 
+	 * Image stack to analyze
+	 * */ 
 	protected ImagePlus imp;
 
-	// image processor at the time of starting the analysis
+	/** 
+	 * image processor at the time of starting the analysis
+	 */
 	protected ImageProcessor ip;
 
+	/** 
+	 * Internal flag, to set reference secton to image center at first run
+	 */
 	public static boolean first=true;
 
+	/** 
+	 * x-coordinate of the reference section
+	 */
 	public static int reference_x=0;
+	/**
+	 * y-coordinate of the reference section
+	 */
 	public static int reference_y=0;
-	@Override
+	
+	/**
+	 * Read the position (xy) of the reference section and masking preferences from 
+	 * the user dialog
+	 */
 	public boolean dialogItemChanged(GenericDialog gd, AWTEvent e) {
 		// Intermediate variable to accept numbers before filtering
 		
@@ -101,7 +133,11 @@ public class LocalPhase implements PlugInFilter,DialogListener, ActionListener {
 
 	}
 
-	@Override
+	/**
+	 * Indicate that we need greyscale images and also
+	 * that the original image is not changed ( a new output image is generated instead)
+	 * If run for the first time, set reference section to center of image
+	 */
 	public int setup(String arg, ImagePlus imp) {
 		if(first)
 		{
@@ -122,7 +158,11 @@ public class LocalPhase implements PlugInFilter,DialogListener, ActionListener {
 		return DOES_8G+NO_CHANGES;
 	}
 
-	
+	/**
+	 * Run the plugin: Start the dialog and recover user preferences; 
+	 * Check whether the reference section contains at least two peaks (identifie by non-zero values)
+	 * Calculate and show the phase image
+	 */
 	public void run(ImageProcessor theIp) {
 		// TODO Auto-generated method stub
 
@@ -148,34 +188,21 @@ public class LocalPhase implements PlugInFilter,DialogListener, ActionListener {
 					+ "throughout the measurement time" );
 			return;
 		}
-
-
-		int [] idx_ref = non_zero_indices(reference_x, reference_y);
-
-		IJ.showMessage("Reference section : "+idx_ref.length+" peaks detected");
-
-		ImageStack theStack = new ImageStack(imp.getWidth(), 
-				imp.getHeight(), 1);
-
-		FloatProcessor fp=new FloatProcessor(theStack.getWidth(), 
-				theStack.getHeight());
-		
-		theStack.setProcessor(fp, 1);
-
 		
 		
-		for(int x=0; x<imp.getWidth(); x++)
+		
+
+
+		
+		ImageStack theStack = null;
+		
+		if(do_masking)
 		{
-			for(int y=0; y<imp.getHeight(); y++)
-			{
-				
-					fp.putPixelValue(x, y, doEvaluationAtxy( x, y, idx_ref));
-					
-					
-				
-			}
 			
-			IJ.showProgress(((double) x)/((double) imp.getWidth()));
+			theStack = getPhaseImage(imp, reference_x, reference_y, mask,true);
+		} else
+		{
+			theStack = getPhaseImage(imp, reference_x, reference_y, true);
 		}
 		
 		
@@ -195,25 +222,34 @@ public class LocalPhase implements PlugInFilter,DialogListener, ActionListener {
 
 	}
 	
-	public static FloatProcessor getPhaseImage(ImagePlus inputImage, int ref_x, int ref_y, ImagePlus theMask)
+	public static ImageStack getPhaseImage(ImagePlus inputImage, int ref_x, int ref_y, ImagePlus theMask)
 	{
 	 return getPhaseImage(inputImage, ref_x, ref_y, theMask, false);	
 	}
 	
-	public static FloatProcessor getPhaseImage(ImagePlus inputImage, int ref_x, int ref_y, boolean showOutput)
+	public static ImageStack getPhaseImage(ImagePlus inputImage, int ref_x, int ref_y, boolean showOutput)
 	{
 		return getPhaseImage(inputImage, ref_x, ref_y, null, showOutput);
 		
 	}
 	
-	public static FloatProcessor getPhaseImage(ImagePlus inputImage, int ref_x, int ref_y)
+	public static ImageStack getPhaseImage(ImagePlus inputImage, int ref_x, int ref_y)
 	{
 		return getPhaseImage(inputImage, ref_x, ref_y, null, false);
 		
 	}
 	
+	/** Calculate phase image
+	 * 
+	 * @param inputImage
+	 * @param ref_x
+	 * @param ref_y
+	 * @param theMask
+	 * @param showOutput
+	 * @return
+	 */
 	
-	public static FloatProcessor getPhaseImage(ImagePlus inputImage, int ref_x, 
+	public static ImageStack getPhaseImage(ImagePlus inputImage, int ref_x, 
 			int ref_y, ImagePlus theMask, boolean showOutput)
 	{
 		
@@ -251,7 +287,7 @@ public class LocalPhase implements PlugInFilter,DialogListener, ActionListener {
 		
 		
 		
-		return fp;
+		return theStack;
 		
 	}
 	

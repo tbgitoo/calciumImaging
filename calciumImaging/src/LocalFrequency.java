@@ -20,7 +20,7 @@ public class LocalFrequency implements PlugInFilter,DialogListener  {
 	/** Holds a reference to the primary ImagePlus object associated with this plugin */
 	protected ImagePlus imp;
 
-	// image processor at the time of starting the analysis
+	/** image processor at the time of starting the analysis */
 	protected ImageProcessor ip;
 	
 	/** Video frame rate, in frame/s
