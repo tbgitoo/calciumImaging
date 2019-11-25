@@ -322,9 +322,7 @@ public class FindPeaks implements PlugInFilter,DialogListener {
 
 
 	/** 
-	 * @inheritDoc
-	 * 
-	 *  For this class, displays the dialog with the various findPeaks options
+	 *  Displays the dialog with the various findPeaks options
 	 */
 
 	public boolean doDialog()

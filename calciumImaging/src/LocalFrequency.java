@@ -27,7 +27,7 @@ public class LocalFrequency implements PlugInFilter,DialogListener  {
 	/**
 	 * @inheritDoc
 	 *
-	 * For this class, read frame rate
+	 * For this class, read the video frame rate from user input
 	 */
 	public boolean dialogItemChanged(GenericDialog gd, AWTEvent e) {
 		// Intermediate variable to accept numbers before filtering
@@ -60,7 +60,13 @@ public class LocalFrequency implements PlugInFilter,DialogListener  {
 
 	}
 
-	@Override
+	/**
+	 * @inheritDoc
+	 *
+	 * For this class, indicate that we need greyscale images and also
+	 * that the original image is not changed ( a new output image is generated instead)
+	 */
+	
 	public int setup(String arg, ImagePlus imp) {
 		
 
@@ -70,7 +76,17 @@ public class LocalFrequency implements PlugInFilter,DialogListener  {
 		// For now, restricted to 8bit greyscale images
 		return DOES_8G+NO_CHANGES;
 	}
-
+	
+	
+	/** 
+	 * @inheritDoc
+	 * 
+	 *  For this class, displays the dialog to get the frame rate.
+	 *  Then pefroms stack projection with division by 255 to get the number of beats, 
+	 *  which is then extrapolated to beats per minute.
+	 *  Output: Creates a plain image with the xy dimensions of the stack, showing the 
+	 *  local beating calcium wave frequency (32 bit)
+	 */
 	
 	public void run(ImageProcessor theIp) {
 		// TODO Auto-generated method stub
@@ -139,19 +155,11 @@ public class LocalFrequency implements PlugInFilter,DialogListener  {
 	}
 	
 
-	
-	
-	
-	
-	
 
-
+	/** 
+	 *  Displays the dialog with the input field for the frame rate
+	 */
 	
-
-
-	
-
-
 
 	public boolean doDialog()
 	{
