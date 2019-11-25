@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="calciumImaging" default="generate-jar" basedir="/">
+
+
+<target name = "generate-jar">
+<jar destfile = "/Users/thomasbraschler/git/calciumImaging/calciumImaging/bin/jars/calciumImaging_.jar"
+   basedir = "/Users/thomasbraschler/git/calciumImaging/calciumImaging/bin"
+   includes = "calciumImaging/**,*.class,FindPeaks/accessory/classes/**"
+    >
+     <fileset dir="/Users/thomasbraschler/git/calciumImaging/calciumImaging/config"/>
+    </jar>
+</target>
+
+</project>
