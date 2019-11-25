@@ -16,8 +16,9 @@
 ## This is an ImageJ plugin implementation for finding peaks along the 
 ## z-direction in a Stack, for each pixel. It makes use of the 
 ## FindPeaksTools class, in package "FindPeaks.accesory.classes", which provides
-## the actual mathematical functionality. This class in turn is mostly a Java re-implementation
-## of the Octave findPeaks method, available at https://bitbucket.org/mtmiller/octave-signal
+## the actual mathematical functionality. The FindPeaksTools class in turn is mostly a Java re-implementation
+## of the Octave findPeaks method, by Juan Pablo Carbajal, 
+## available at https://bitbucket.org/mtmiller/octave-signal
 ## (direct link: https://searchcode.com/codesearch/view/64213481/)
 ## The Octave source code is under a General Public License
 
