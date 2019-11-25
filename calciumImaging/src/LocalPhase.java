@@ -222,16 +222,42 @@ public class LocalPhase implements PlugInFilter,DialogListener, ActionListener {
 
 	}
 	
+	/** Calculate phase image
+	 * 
+	 * @param inputImage The image indicating peak locations (pixel value larger than 0) in the z-profiles. 
+	 * @param ref_x X-coordinate of the reference section
+	 * @param ref_y Y-coordinate of the reference section
+	 * @param theMask Mask image to limit analysis, provide null to not use this option
+	 * @return New ImageStack, with a single slice, shows the local phase (or NaN if none could be evaluated)
+	 */
+	
 	public static ImageStack getPhaseImage(ImagePlus inputImage, int ref_x, int ref_y, ImagePlus theMask)
 	{
 	 return getPhaseImage(inputImage, ref_x, ref_y, theMask, false);	
 	}
+	
+	/** Calculate phase image
+	 * 
+	 * @param inputImage The image indicating peak locations (pixel value larger than 0) in the z-profiles. 
+	 * @param ref_x X-coordinate of the reference section
+	 * @param ref_y Y-coordinate of the reference section
+	 * @param showOutput Be verbose about output (ImageJ message boxes)
+	 * @return New ImageStack, with a single slice, shows the local phase (or NaN if none could be evaluated)
+	 */
 	
 	public static ImageStack getPhaseImage(ImagePlus inputImage, int ref_x, int ref_y, boolean showOutput)
 	{
 		return getPhaseImage(inputImage, ref_x, ref_y, null, showOutput);
 		
 	}
+	
+	/** Calculate phase image
+	 * 
+	 * @param inputImage The image indicating peak locations (pixel value larger than 0) in the z-profiles. 
+	 * @param ref_x X-coordinate of the reference section
+	 * @param ref_y Y-coordinate of the reference section
+	 * @return New ImageStack, with a single slice, shows the local phase (or NaN if none could be evaluated)
+	 */
 	
 	public static ImageStack getPhaseImage(ImagePlus inputImage, int ref_x, int ref_y)
 	{
@@ -365,14 +391,27 @@ public class LocalPhase implements PlugInFilter,DialogListener, ActionListener {
 		
 	}
 	
-	
+	/** Get phase at position xy, without masking options
+	 * 
+	 * @param theImage Stack with temporal peak identification
+	 * @param x x-position
+	 * @param y y-position
+	 * @param idx_ref Location of the peaks in the reference section
+	 * @return Phase, in radians
+	 */
 	public static double getPhaseAtxy(ImagePlus theImage, int x, int y, int[] idx_ref)
 	{
 		return LocalPhaseTools.getPhase(non_zero_indices(theImage,x,y),idx_ref);
 		
 		
 	}
-	
+	/** Get phase at position xy, without masking options
+	 * Non-static version, using image assigned to the plugin
+	 * @param x x-position
+	 * @param y y-position
+	 * @param idx_ref Location of the peaks in the reference section
+	 * @return Phase, in radians
+	 */
 	public double getPhaseAtxy(int x, int y, int[] idx_ref)
 	{
 		return LocalPhaseTools.getPhase(non_zero_indices(x,y),idx_ref);
@@ -380,7 +419,13 @@ public class LocalPhase implements PlugInFilter,DialogListener, ActionListener {
 		
 	}
 	
-
+	/**
+	 * Get the indices to the non-zero entries in the z-profile at position x,y
+	 * @param theImage Image stack to be analyzed for pixels with values greater than 0
+	 * @param x X-position to be analyzed
+	 * @param y Y-position to be analyzed
+	 * @return Array of indices to the elements with pixel values larger than 0 in the z-profile at x,y
+	 */
 	public static int[] non_zero_indices(ImagePlus theImage, int x, int y)
 	{
 		int [] theSection = getStackSection(theImage,x,y);
@@ -390,11 +435,14 @@ public class LocalPhase implements PlugInFilter,DialogListener, ActionListener {
 
 	}
 	
+	/**
+	 * Get the indices to the non-zero entries in the z-profile at position x,y
+	 * Non-static version, using the Image associated with this plugin
+	 * @param x X-position to be analyzed
+	 * @param y Y-position to be analyzed
+	 * @return Array of indices to the elements with pixel values larger than 0 in the z-profile at x,y
+	 */
 	
-	
-	
-	
-
 	public int[] non_zero_indices(int x, int y)
 	{
 		int [] theSection = getStackSection(x,y);
@@ -404,7 +452,13 @@ public class LocalPhase implements PlugInFilter,DialogListener, ActionListener {
 
 	}
 
-	// Checks whether at least 2 points are non-zero, otherwise no time can be defined
+	/**
+	 *  Checks whether at least 2 pixels in the z-profile are non-zero, otherwise no time can be defined
+	 *  between peaks
+	 * @param x The x-position
+	 * @param y The y-position
+	 * @return true if at least 2 peaks as identified by pixel values greater than zero or found, false otherwise
+	 */
 	public boolean checkSection(int x, int y)
 	{
 		int [] theSection = getStackSection( x,  y);
@@ -419,6 +473,13 @@ public class LocalPhase implements PlugInFilter,DialogListener, ActionListener {
 
 	}
 	
+	/**
+	 * Get the z-profile at the point defined by x,y
+	 * @param theImage The z-stack to be analyzed
+	 * @param x The x-position
+	 * @param y The y-position
+	 * @return Array of indices to the non-zero pixels in the z-profile
+	 */
 	public static int[] getStackSection(ImagePlus theImage, int x, int y)
 	{
 
@@ -438,6 +499,13 @@ public class LocalPhase implements PlugInFilter,DialogListener, ActionListener {
 
 	}
 	
+	/**
+	 * Get the z-profile at the point defined by x,y
+	 * Non-static version, uses the image assigned to this plugin
+	 * @param x The x-position
+	 * @param y The y-position
+	 * @return Array of indices to the non-zero pixels in the z-profile
+	 */
 
 	public int[] getStackSection(int x, int y)
 	{
@@ -446,11 +514,12 @@ public class LocalPhase implements PlugInFilter,DialogListener, ActionListener {
 
 	}
 	
-	// For inheriting classes: hook to allow to add more things to the dialog
-	public void extendDialog()
-	{
-		
-	}
+	
+	/** 
+	 *  Displays the dialog for inputting the reference position (phase 0)
+	 *  and also masking options
+	 *  @return true upon success, false otherwise (including user cancel)
+	 */
 
 
 	public boolean doDialog()
@@ -484,7 +553,7 @@ public class LocalPhase implements PlugInFilter,DialogListener, ActionListener {
 		gd.addChoice("Mask", window_titles, lastMaskTitle);
 		
 		
-		extendDialog();
+		
 
 		// We need to follow the dialog to update the class variables
 		gd.addDialogListener(this);
@@ -500,6 +569,9 @@ public class LocalPhase implements PlugInFilter,DialogListener, ActionListener {
 		return (!gd.wasCanceled());
 
 	}
+	/** 
+	 * Programmatically update the input fields for the reference positions 
+	 */
 	
 	public void update_text_fields_reference_x_y()
 	{
@@ -516,7 +588,9 @@ public class LocalPhase implements PlugInFilter,DialogListener, ActionListener {
 		
 	}
 
-	
+	/** 
+	 * Event listener for the button to center the reference position to the center of the image 
+	 * */
 	public void actionPerformed(ActionEvent e) {
 		
 		reference_x = (int)Math.round((double)imp.getWidth()/2.0);
