@@ -1,4 +1,4 @@
-package FindPeaks.accessory.classes;
+package tbgitoo.tools;
 
 import ij.ImageStack;
 import ij.process.ByteProcessor;

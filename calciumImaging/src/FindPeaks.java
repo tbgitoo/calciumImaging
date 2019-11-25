@@ -44,8 +44,6 @@
 import java.awt.AWTEvent;
 
 import FindPeaks.accessory.classes.FindPeaksTools;
-import FindPeaks.accessory.classes.ImageTools;
-import FindPeaks.accessory.classes.StatisticsTools;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
@@ -53,6 +51,8 @@ import ij.gui.DialogListener;
 import ij.gui.GenericDialog;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
+import tbgitoo.tools.ImageTools;
+import tbgitoo.tools.StatisticsTools;
 
 // The basic idea of this plugin is that it identifies the peak location in the z-axis of the stack
 // it is inspired by Octave findpeaks code.

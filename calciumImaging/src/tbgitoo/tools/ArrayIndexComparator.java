@@ -29,7 +29,7 @@
 ##  
 */
 
-package FindPeaks.accessory.classes;
+package tbgitoo.tools;
 
 import java.util.Comparator;
 

@@ -8,7 +8,11 @@
         	notree="false" packagenames="FindPeaks.accessory.classes" 
         	source="1.8" 
         	sourcefiles="../src/LocalFrequency.java,../src/FindPeaks.java,../src/LocalPhase.java,
-        	../src/FindPeaks/accessory/classes/ArrayIndexComparator.java,
+        	../src/tbgitoo/tools/ArrayIndexComparator.java,
+        	../src/tbgitoo/tools/ArraySortTools.java,
+        	../src/tbgitoo/tools/VectorTools.java,
+        	../src/tbgitoo/tools/ImageTools.java,
+        	../src/tbgitoo/tools/StatisticsTools.java,
         	../src/FindPeaks/accessory/classes/FindPeaksTools.java,
         	../src/FindPeaks/accessory/classes/LocalPhaseTools.java" 
         	sourcepath="../src" splitindex="true" use="true" version="true"/>

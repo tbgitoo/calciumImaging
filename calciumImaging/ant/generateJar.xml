@@ -5,7 +5,7 @@
 <target name = "generate-jar">
 <jar destfile = "/Users/thomasbraschler/git/calciumImaging/calciumImaging/bin/jars/calciumImaging_.jar"
    basedir = "/Users/thomasbraschler/git/calciumImaging/calciumImaging/bin"
-   includes = "calciumImaging/**,*.class,FindPeaks/accessory/classes/**"
+   includes = "calciumImaging/**,*.class,FindPeaks/accessory/classes/**,tbgitoo/tools/**"
     >
      <fileset dir="/Users/thomasbraschler/git/calciumImaging/calciumImaging/config"/>
     </jar>
