@@ -40,21 +40,19 @@
 
 package FindPeaks.accessory.classes;
 
-import java.util.Arrays;
 import java.util.Vector;
 
-import ij.ImageStack;
-import ij.process.ByteProcessor;
 import tbgitoo.tools.ArraySortTools;
 import tbgitoo.tools.FitParabola;
 import tbgitoo.tools.VectorTools;
 
 
 /**
- * Collection of static methods supporting the peak analysis of image stacks
- * A first group of functions enables peak detection in a one-dimensional array of values
- * There are also some very basic implementation of vecotr functions (mean, scalar product, sum and so on) used
- * repeatedly in the context of the peak analysis, and finally also image handling functions
+ * Generic methods for peak detection in a one-dimensional array of values
+ * Based on the Octave findPeak method (https://searchcode.com/codesearch/view/64213481/)
+ * Also, invokes methods from the ArraySortTools class, which is based on snippets 
+ * from https://stackoverflow.com/questions/4859261/get-the-indices-of-an-array-after-sorting
+ * See license at the beginning of this file
  * @author thomasbraschler
  *
  */
@@ -96,15 +94,22 @@ public class FindPeaksTools {
 
 	
 
-	
+	/** 
+	 * This function identifies peaks above a threshold, and with a minimal distance between 
+	 * them. The function is a bit rought and therefore needs some cleanup afterwards, but it 
+	 * gives suitable primary candidates. This is the first part of the findPeak implementation
+	 * in Octave (https://searchcode.com/codesearch/view/64213481/)
+	 * @param vals Values of the function for which peaks should be found. Unit spacing between sequential values is assumed
+	 * @param threshold Threshold above which a value need to lie to be considered as a candidate for being peak
+	 * @param minD Minimal distance between neighboring peaks
+	 * @return Array of indices indicating the peaks
+	 */
 
-	// This function identifies peaks above a threshold, and with a minimal distance between 
-	// them. The function is a bit rought and therefore needs some cleanup afterwards, but it 
-	// gives suitable primary candidates
+	
 	public static int[] identifyPeaksAtMinimalDistance(double[] vals, double threshold, double minD)
 	{
 
-
+		// Only values exceeding the threshold are peak canditates
 		int[] idx = VectorTools.getIndexesOfValuesExceedingThreshold(vals,threshold);
 
 
@@ -127,6 +132,9 @@ public class FindPeaksTools {
 		
 
 		// We need to apply this order, but in reverse, to the idx values
+		// After this, we should have an array of indices, the first element
+		// pointing to the highest value, then the second to second-highest value, and so
+		// forth
 		int[] idx_s=new int[idx.length];
 
 		for(int ind=0; ind<idx.length; ind++)
@@ -134,13 +142,6 @@ public class FindPeaksTools {
 			idx_s[ind]=idx[order[idx.length-1-ind]];
 		}
 		
-		
-		
-		
-		
-		
-
-
 
 		// The nodes2visit hold the indexes to the elements in idx_s we still need to look at
 		Vector<Integer> node2visit = new Vector <Integer>(idx_s.length);
@@ -157,14 +158,12 @@ public class FindPeaksTools {
 			idx_pruned.add(idx_s[ind]);
 		}
 
-
-
-
-
+		// While we still have nodes to visit left
 		while (node2visit.size()>0)
 		{
-			// Set the current node as visited
+			// Set the current node as the node with the highest value that is still avaible
 			int current_node = node2visit.get(0);
+			// This node is now visited, remove from candidates and add to visited array
 			node2visit.remove(0);
 			visited.add(current_node);
 
@@ -185,18 +184,22 @@ public class FindPeaksTools {
 					}
 				}
 			}
-
+			// We got the neighbors, and there are indeed some neighbors
 			if(neighs.size()>0)
 			{
 				Vector<Integer> idx_neighs=new Vector<Integer>(neighs.size());
 
 				for(int ind=0; ind<neighs.size(); ind++)
 				{
+					// listing the neighbors
 					idx_neighs.add(idx_s[neighs.get(ind)]);
+					// all those neighbors should be counted as visited in the next round
 					visited.add(neighs.get(ind).intValue());
 				}
 
+				// Remove the neighbors from the available candidates
 				idx_pruned=VectorTools.setDiff(idx_pruned,idx_neighs);
+				// Make sure no more visited nodes figure in the array with the nodes to visit
 				node2visit=VectorTools.setDiff(node2visit, visited);
 			}
 
@@ -205,14 +208,10 @@ public class FindPeaksTools {
 
 
 
-
-
-
-
-
-
-
 		// So now we have all the indexes of the values that are larger than the threshold, in decreasing order
+		// with sequential removal of all the neighbors too close to the peaks as identified by the maxima
+		
+		// Format for return
 		idx=new int[idx_pruned.size()];
 
 		for(int ind=0; ind<idx_pruned.size(); ind++)
@@ -221,28 +220,32 @@ public class FindPeaksTools {
 		}
 
 
-
-
-
-
+		// And return
 		return idx;
 
 
 	}
+	
+	/**
+	 * This is the second part of the Java implementation of the Octave findPeaks function
+	 * (see https://searchcode.com/codesearch/view/64213481/)
+	 * We estimate widths of peaks remove peaks that have quality issues:
+	 * width smaller than given minal width or larger than maximal width.
+	 * wrong concavity.
+	 * not high enough
+	 * data at peak is lower than parabola by 1%
+	 * position of extrema minus center is bigger equal than minD/2
+     * @param idx the pre-filtered peak candidates,typicaly obtained from the method identifyPeaksAtMinimalDistance
+	 * @param vals Underlying values (complete dataset)
+	 * @param minD distance required between the peaks (minD)
+	 * @param minW Minimal fitting width
+	 * @param maxW Maximal fitting width
+	 * @param minH Minimal fitting height
+	 * @param fitMin Minimal environment around peak for parabola fitting
+	 * @return Indices point to peaks passing quality criteria
+	 */
 
-	//Estimate widths of peaks and filter for:
-	//width smaller than given.
-	//wrong concavity.
-	//not high enough
-	//data at peak is lower than parabola by 1%
-	//position of extrema minus center is bigger equal than minD/2
-	// This function takes as a first input the argument (idx) the pre-filtered peak candidates,
-	// which are typicaly obtained from "identifyPeaksAtMinimalDistance"
-	// It also needs the underlying values from the complete dataset (vals) and the minimal
-	// distance required between the peaks (minD)
-	// further, it checks whether the fitted peak width fals between minW and maxW
-	// and whether the height is more than minH
-
+	
 	public static int[] filterPeaks(int[] idx, double[] vals, double minD, 
 			double minW, double maxW, double minH, double fitMin)
 	{
@@ -255,28 +258,32 @@ public class FindPeaksTools {
 		for(int ind=0; ind<idx.length; ind++)
 		{
 			// get the local data around the peak. Check whether peak candidate is a local maximum
+			// The lower bound should not be below the putative peak position - minD/2
+			// and the upper bound not higher than the putative peak position + minD/2
+			// in addition, lower and upper bounds must cover actual array elements in vals
 			int lower_bound = (int)Math.max(Math.floor(-minD/2+idx[ind]), 0);
 			int upper_bound = (int)Math.min(Math.ceil(minD/2+idx[ind]), vals.length-1);
 
 
-
+			// Approach the lower bound more if permitted by fitMin
 			while(lower_bound < idx[ind]-1 && vals[lower_bound]<fitMin)
 			{
 				lower_bound++;
 			}
-
+			// Approach the upper bound more if permitted by fitMin
 			while(upper_bound > idx[ind]+1 && vals[upper_bound]<fitMin)
 			{
 				upper_bound--;
 			}
 
-
+			// Isolate the locally relevant values
 			double[] localVals = new double[upper_bound-lower_bound+1];
 
 
 
 			boolean isMaximum=true;
-
+			// For parabola fitting, check whether the original peak candidate is also a local
+			// maximum or whether in the environment, there are some higher values
 			for(int local_ind=0; local_ind<localVals.length; local_ind++)
 			{
 				localVals[local_ind]=vals[lower_bound+local_ind];
@@ -287,19 +294,21 @@ public class FindPeaksTools {
 			}
 
 
-
-			double [] pp; // for fitting a parabola
+			// Parabola coefficients (3 values), for fitting a parabola
+			double [] pp; 
 			double xm; // local X-value at maximum
 			double H; // height of peak
 			// The current point is not the maximum, so use polynomial fitting
 			if(!isMaximum)
 			{
 				pp=FitParabola.fitParabola(localVals);
-				xm=-pp[1]/2/pp[2];
-				H=pp[0]+pp[1]*xm+pp[2]*xm*xm;
+				xm=-pp[1]/2/pp[2]; // The maximum of a parabola has zero derivative
+				// so d/dx pp[2]*x^2+pp[1]*x+pp[0]=0 => 2*pp[2]*x+pp[1]=0
+				H=pp[0]+pp[1]*xm+pp[2]*xm*xm; // apex height
 
 
-			} else // Use fixed extremum fittin instead
+			} else // Use fixed extremum fittin instead, with the maximum supposed at the actual position
+				
 			{
 				xm=idx[ind]-lower_bound;
 				pp=FitParabola.fitParabolaFixedExtremum(localVals, (int)Math.round(xm));
@@ -324,15 +333,17 @@ public class FindPeaksTools {
 
 			if(keep)
 			{
-
+				// Not high enough
 				if(H<minH)
 				{
 					keep = false;
 
 				} else
 				{
+					// Estimate width from height above minimum. This is symmetry, so 
+					// its delta H = x^2 * pp[2]
 					double width=Math.sqrt(-(H-minH)/pp[2]);
-
+					// The width fitted in this way should be between the imposed bounds
 					if(width<minW || width>maxW)
 					{
 
@@ -347,7 +358,7 @@ public class FindPeaksTools {
 
 			if(keep)
 			{
-
+				// The actual maximum should not be further than minD/2 from the fitted one (if different)
 				if(Math.abs(idx[ind]-xm-lower_bound)>minD/2)
 				{
 					keep=false;
@@ -356,12 +367,8 @@ public class FindPeaksTools {
 
 			}
 
-			if(!keep)
-			{
-
-
-			}
-
+			
+			// All tests passed so add to list to keep
 			if(keep)
 			{
 				idx_pruned.add(idx[ind]);
@@ -373,6 +380,7 @@ public class FindPeaksTools {
 
 		}
 
+		// Format for return 
 		int [] new_idx = new int[idx_pruned.size()];
 
 		for(int ind=0; ind<idx_pruned.size(); ind++)
@@ -380,6 +388,7 @@ public class FindPeaksTools {
 			new_idx[ind]=idx_pruned.get(ind).intValue();
 		}
 
+		// Return
 		return new_idx;
 
 	}
