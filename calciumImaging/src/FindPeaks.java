@@ -41,7 +41,7 @@ import ij.process.ImageProcessor;
 /** ImageJ plugin to find peaks (maxima) in vertical sections of a z-stack*/
 public class FindPeaks implements PlugInFilter,DialogListener {
 
-	/** Holds a reference to the ImagePlus object associated with this plugin */
+	/** Holds a reference to the primary ImagePlus object associated with this plugin */
 	protected ImagePlus imp;
 
 	/** image processor at the time of starting the analysis */
@@ -77,10 +77,9 @@ public class FindPeaks implements PlugInFilter,DialogListener {
 
 
 	/**
-	 * @inheritDoc
-	 *
-	 * For this class, read the peak_fraction, minD, doFiltering, minW, maxW and minH parameters
-	 * from the dialog
+	 * Read the peak_fraction, minD, doFiltering, minW, maxW and minH parameters
+	 * from the dialog 
+	 * 
 	 */
 	public boolean dialogItemChanged(GenericDialog gd, AWTEvent e) {
 
@@ -175,9 +174,7 @@ public class FindPeaks implements PlugInFilter,DialogListener {
 
 
 	/**
-	 * @inheritDoc
-	 *
-	 * For this class, indicate that we need greyscale images and also
+	 * Indicate that we need greyscale images and also
 	 * that the original image is not changed ( a new output image is generated instead)
 	 */
 	public int setup(String arg, ImagePlus imp) {
@@ -222,10 +219,8 @@ public class FindPeaks implements PlugInFilter,DialogListener {
 	
 	
 
-	/** 
-	 * @inheritDoc
-	 * 
-	 *  For this class, displays the dialog for setting the custom options.
+	/**  
+	 *  Displays the dialog for setting the custom options.
 	 *  Then finds the temporal peaks with these options for each xy pixel position.
 	 *  Output: creates and shows a new stack with identical dimensions to the stack analyzed,
 	 *  where non-peak pixels are black (0) and peak pixels white (255)
@@ -323,6 +318,7 @@ public class FindPeaks implements PlugInFilter,DialogListener {
 
 	/** 
 	 *  Displays the dialog with the various findPeaks options
+	 *  @return true upon success, false otherwise (including user cancel)
 	 */
 
 	public boolean doDialog()

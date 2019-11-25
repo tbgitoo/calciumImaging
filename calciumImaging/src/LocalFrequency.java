@@ -14,20 +14,22 @@ public class LocalFrequency implements PlugInFilter,DialogListener  {
 	
 	
 
-	
+	/** Reference to the dialog shown in this plugin */
 	protected static GenericDialog gd;
 	
+	/** Holds a reference to the primary ImagePlus object associated with this plugin */
 	protected ImagePlus imp;
 
 	// image processor at the time of starting the analysis
 	protected ImageProcessor ip;
 	
+	/** Video frame rate, in frame/s
+	 */
+	
 	public static double frame_rate=24;
 
 	/**
-	 * @inheritDoc
-	 *
-	 * For this class, read the video frame rate from user input
+	 * Read the video frame rate from user input
 	 */
 	public boolean dialogItemChanged(GenericDialog gd, AWTEvent e) {
 		// Intermediate variable to accept numbers before filtering
@@ -61,9 +63,7 @@ public class LocalFrequency implements PlugInFilter,DialogListener  {
 	}
 
 	/**
-	 * @inheritDoc
-	 *
-	 * For this class, indicate that we need greyscale images and also
+	 * Indicate that we need greyscale images and also
 	 * that the original image is not changed ( a new output image is generated instead)
 	 */
 	
@@ -79,8 +79,6 @@ public class LocalFrequency implements PlugInFilter,DialogListener  {
 	
 	
 	/** 
-	 * @inheritDoc
-	 * 
 	 *  For this class, displays the dialog to get the frame rate.
 	 *  Then pefroms stack projection with division by 255 to get the number of beats, 
 	 *  which is then extrapolated to beats per minute.
@@ -158,6 +156,7 @@ public class LocalFrequency implements PlugInFilter,DialogListener  {
 
 	/** 
 	 *  Displays the dialog with the input field for the frame rate
+	 *  @return true upon success, false otherwise (including user cancel)
 	 */
 	
 
