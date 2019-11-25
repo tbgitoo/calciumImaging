@@ -44,6 +44,7 @@
 import java.awt.AWTEvent;
 
 import FindPeaks.accessory.classes.FindPeaksTools;
+import FindPeaks.accessory.classes.ImageTools;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
@@ -265,7 +266,7 @@ public class FindPeaks implements PlugInFilter,DialogListener {
 		}
 
 
-		ImageStack outputStack = FindPeaksTools.getEmptyByteStack(imp.getStack());
+		ImageStack outputStack = ImageTools.getEmptyByteStack(imp.getStack());
 		
 		
 		for(int x=0; x<imp.getWidth(); x++)
