@@ -45,6 +45,7 @@ import java.util.Vector;
 
 import ij.ImageStack;
 import ij.process.ByteProcessor;
+import tbgitoo.tools.VectorTools;
 
 
 /**
@@ -93,30 +94,7 @@ public class FindPeaksTools {
 
 	
 
-	// This function finds the indexes of the values at or above the threshold
-	public static int[] getIndexesOfValuesExceedingThreshold(double[] vals, double threshold)
-	{
-		int[] idx = new int[vals.length];
-		int index=0;
-
-		for(int index_vals=0; index_vals<vals.length; index_vals++)
-		{
-			if(vals[index_vals]>=threshold)
-			{
-				idx[index]=index_vals;
-				index++;
-			}
-		}
-
-		int[] idx_final = new int[index];
-		for(int newIndex=0; newIndex < index; newIndex++)
-		{
-			idx_final[newIndex]=idx[newIndex];
-		}
-
-		return idx_final;
-
-	}
+	
 
 	// This function identifies peaks above a threshold, and with a minimal distance between 
 	// them. The function is a bit rought and therefore needs some cleanup afterwards, but it 
@@ -125,7 +103,7 @@ public class FindPeaksTools {
 	{
 
 
-		int[] idx = getIndexesOfValuesExceedingThreshold(vals,threshold);
+		int[] idx = VectorTools.getIndexesOfValuesExceedingThreshold(vals,threshold);
 
 
 

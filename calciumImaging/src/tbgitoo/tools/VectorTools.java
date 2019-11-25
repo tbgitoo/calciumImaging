@@ -1,4 +1,4 @@
-package FindPeaks.accessory.classes;
+package tbgitoo.tools;
 
 import java.util.Vector;
 
@@ -107,6 +107,31 @@ public class VectorTools {
 			}
 
 			return(ret);
+
+		}
+		
+		// This function finds the indexes of the values at or above the threshold
+		public static int[] getIndexesOfValuesExceedingThreshold(double[] vals, double threshold)
+		{
+			int[] idx = new int[vals.length];
+			int index=0;
+
+			for(int index_vals=0; index_vals<vals.length; index_vals++)
+			{
+				if(vals[index_vals]>=threshold)
+				{
+					idx[index]=index_vals;
+					index++;
+				}
+			}
+
+			int[] idx_final = new int[index];
+			for(int newIndex=0; newIndex < index; newIndex++)
+			{
+				idx_final[newIndex]=idx[newIndex];
+			}
+
+			return idx_final;
 
 		}
 
