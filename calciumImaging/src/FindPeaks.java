@@ -51,7 +51,6 @@ import ij.gui.DialogListener;
 import ij.gui.GenericDialog;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
-import tbgitoo.tools.FitParabola;
 import tbgitoo.tools.ImageTools;
 import tbgitoo.tools.StatisticsTools;
 

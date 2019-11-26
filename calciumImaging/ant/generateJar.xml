@@ -3,11 +3,11 @@
 
 
 <target name = "generate-jar">
-<jar destfile = "/Users/thomasbraschler/git/calciumImaging/calciumImaging/bin/jars/calciumImaging_.jar"
-   basedir = "/Users/thomasbraschler/git/calciumImaging/calciumImaging/bin"
+<jar destfile = "../bin/jars/calciumImaging_.jar"
+   basedir = "../bin"
    includes = "calciumImaging/**,*.class,FindPeaks/accessory/classes/**,tbgitoo/tools/**"
     >
-     <fileset dir="/Users/thomasbraschler/git/calciumImaging/calciumImaging/config"/>
+     <fileset dir="../config"/>
     </jar>
 </target>
 
