@@ -145,6 +145,8 @@ public class LocalFrequency implements PlugInFilter,DialogListener  {
 		ImagePlus output = zp.getProjection();
 		
 		FloatProcessor flp = (FloatProcessor) output.getProcessor();
+		// We need the maximum frequency for setting a reasonable display range
+		double maxFrequency=0;
 		
 		for(int x=0; x<flp.getWidth(); x++)
 		{
@@ -155,11 +157,19 @@ public class LocalFrequency implements PlugInFilter,DialogListener  {
 				// and the known framerate
 				// Finally, convert to beats per minute
 				double newVal = (double)flp.getPixelValue(x, y)/((double)imp.getStackSize())*frame_rate/255.0*60.0;
+				
 				flp.putPixelValue(x, y, newVal);
+				if(newVal > maxFrequency)
+				{
+					maxFrequency=newVal;
+				}
 			}
 		}
 		
 		output.setTitle("Frequency mean - "+imp.getTitle());
+		
+		
+		output.setDisplayRange(0, maxFrequency);
 		
 		output.show();
 		

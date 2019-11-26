@@ -5,16 +5,9 @@
         	classpath="/Applications/Fiji.app/jars/ij-1.50g.jar" 
         	destdir="../doc" nodeprecated="false" 
         	nodeprecatedlist="false" noindex="false" nonavbar="false" 
-        	notree="false" packagenames="FindPeaks.accessory.classes" 
+        	notree="false" packagenames="FindPeaks.accessory.classes,tbgitoo.tools" 
         	source="1.8" 
-        	sourcefiles="../src/LocalFrequency.java,../src/FindPeaks.java,../src/LocalPhase.java,
-        	../src/tbgitoo/tools/ArrayIndexComparator.java,
-        	../src/tbgitoo/tools/ArraySortTools.java,
-        	../src/tbgitoo/tools/VectorTools.java,
-        	../src/tbgitoo/tools/ImageTools.java,
-        	../src/tbgitoo/tools/StatisticsTools.java,
-        	../src/FindPeaks/accessory/classes/FindPeaksTools.java,
-        	../src/FindPeaks/accessory/classes/LocalPhaseTools.java" 
+        	sourcefiles="../src/LocalFrequency.java,../src/FindPeaks.java,../src/LocalPhase.java"
         	sourcepath="../src" splitindex="true" use="true" version="true"/>
     </target>
 </project>

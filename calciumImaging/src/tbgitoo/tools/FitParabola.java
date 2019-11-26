@@ -205,7 +205,7 @@ public class FitParabola {
 	 * the appex has to occur at the x=xm 
 	 * For the peak fitting purpose intended, xm should be in the interval 0 .. length(vals)-1, 
 	 * and this condition is reinforced
-	 * @param Array of values defining the parabola to be fitted
+	 * @param vals Array of values defining the parabola to be fitted
 	 * @param xm Force location of the apex of the parabola. 
 	 * @return array of three values, representing the coefficients a, b, c for the parabolic fit. Order (offset, linear, squared)
 	 */
@@ -218,7 +218,7 @@ public class FitParabola {
 	/**
 	 * Fits a parabola (a + bx + cx^2) to series of values (vals), but under the restriction that
 	 * the appex has to occur at the x=xm 
-	 * @param Array of values defining the parabola to be fitted
+	 * @param vals Array of values defining the parabola to be fitted
 	 * @param xm Force location of the apex of the parabola.
 	 * @param force_xm_in_array_domain Force xm to be in the interval 0 .. length(vals)-1 ? 
 	 * @return array of three values, representing the coefficients a, b, c for the parabolic fit. Order (offset, linear, squared)

@@ -288,9 +288,11 @@ public class FindPeaks implements PlugInFilter,DialogListener {
 		}
 		
 		
-		ImagePlus outputPlus = new ImagePlus("Result findpeaks");
+		ImagePlus outputPlus = new ImagePlus();
 		
 		outputPlus.setStack("Result findpeaks - "+imp.getTitle(), outputStack);
+		
+		
 		
 		outputPlus.show();
 		
