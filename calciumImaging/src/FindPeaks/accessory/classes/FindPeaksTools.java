@@ -13,14 +13,21 @@
 ## You should have received a copy of the GNU General Public License
 ## along with this program; if not, see <http://www.gnu.org/licenses/>. 
 
-## The FindPeaksTools class is in part a Java re-implementation
+## The FindPeaksTools class is a Java re-implementation
 ## of the Octave findPeaks method, by Juan Pablo Carbajal, 
 ## available at https://bitbucket.org/mtmiller/octave-signal
 ## (direct link: https://searchcode.com/codesearch/view/64213481/)
 ## The Octave source code is under a General Public License
+## Re-implementation is sometimes more literal, sometimes just the general
+## spirit. Octave his nice generic array handling and fitting functions, 
+## in Java this is more difficult due to string typing and pre-allocation of 
+## memory to arrays of defined length. So that type of operations either requires
+## extensive external libraries. Here we rather restrict
+## fitting here to the strict necessity and re-implement from
+## scratch (see FitParabola class)
 
-## For array ordering, as need for the findPeaks algorithm, 
-## I also invoke functionality form the ArrayIndexComparator class
+## For array ordering, as also needed for the findPeaks algorithm, 
+## we invoke functionality form the ArrayIndexComparator class
 ## The ArrayIndexComparator class and also its invocation here is based
 ## on an answer to stackoverflow question
 ## https://stackoverflow.com/questions/4859261/get-the-indices-of-an-array-after-sorting
